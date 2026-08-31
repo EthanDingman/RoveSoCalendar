@@ -5,7 +5,29 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>RoveSoCalendar Guide</title>
   <style>
-    /* Dark Theme Variables (Default) */
+    /* Custom Scrollbar Styles */
+    ::-webkit-scrollbar {
+      width: 10px;
+      height: 10px;
+    }
+    ::-webkit-scrollbar-track {
+      background: var(--bg);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: var(--border);
+      border-radius: 5px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--muted);
+    }
+
+    /* Firefox Scrollbar Support */
+    * {
+      scrollbar-width: thin;
+      scrollbar-color: var(--border) var(--bg);
+    }
+
+    /* Dark Theme Variables (Default / SharePoint Dark Match) */
     :root {
       --bg: #1f1f1f;
       --card-bg: #292929;
@@ -158,7 +180,6 @@
     .tab-btn.active:hover {
       background: var(--btn-hover);
     }
-    /* Extended indicator line with 80% width */
     .tab-btn.active::after {
       content: "";
       position: absolute;
@@ -383,6 +404,14 @@
         <li>In the menu that appears, click <strong>Subscribe from web</strong> on the left side</li>
         <li>Paste the URL, enter a name and select a color, then click <strong>Import</strong></li>
       </ol>
+
+      <div class="sub-heading">Outlook Mobile App (iOS / Android)</div>
+      <ol>
+        <li>Open the <strong>Outlook App</strong> on your mobile device.</li>
+        <li>Tap your profile icon (top left) &rarr; tap the <strong>Calendar (+) icon</strong> in the sidebar.</li>
+        <li>Select <strong>Subscribe from Web</strong> (or <em>Add Shared Calendar</em>).</li>
+        <li>Paste the copied link and confirm.</li>
+      </ol>
     </div>
 
     <div id="tab-google" class="tab-content">
@@ -405,8 +434,10 @@
 
     <div id="tab-other" class="tab-content">
       <ol>
-        <li>Most calendars support the .ics format</li>
-        <li>"Google is a multi-trillion-dolar company"</li>
+        <li>Copy any <strong>ICS Link</strong> provided below.</li>
+        <li>Most third-party calendar applications support the standard iCalendar (<code>.ics</code>) format.</li>
+        <li>Look for an option in your application settings such as <strong>Add Account</strong>, <strong>Subscribe to Calendar</strong>, or <strong>Add Calendar from URL</strong>.</li>
+        <li>Paste the copied URL to automatically sync events to your client.</li>
       </ol>
     </div>
   </div>
@@ -549,14 +580,13 @@
 </div>
 
 <script>
-  // Theme Management
+  // Theme Management (Defaults to dark mode)
   function initTheme() {
     const savedTheme = localStorage.getItem('theme');
     if (savedTheme) {
       setTheme(savedTheme);
     } else {
-      const prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
-      setTheme(prefersLight ? 'light' : 'dark');
+      setTheme('dark');
     }
   }
 
