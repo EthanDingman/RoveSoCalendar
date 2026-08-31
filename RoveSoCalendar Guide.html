@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RoveSoCalendar Guide</title>
+  <style>
+    /* Dark Theme Variables (Default) */
+    :root {
+      --bg: #0f172a;
+      --card-bg: #1e293b;
+      --text: #f8fafc;
+      --muted: #94a3b8;
+      --primary: #a91d22;
+      --primary-hover: #8b1418;
+      --accent: #22c55e;
+      --border: #334155;
+      --url-bg: #0f172a;
+      --btn-bg: #334155;
+      --btn-hover: #475569;
+    }
+
+    /* Light Theme Overrides */
+    [data-theme="light"] {
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --text: #0f172a;
+      --muted: #64748b;
+      --primary: #a91d22;
+      --primary-hover: #8b1418;
+      --accent: #16a34a;
+      --border: #e2e8f0;
+      --url-bg: #f1f5f9;
+      --btn-bg: #e2e8f0;
+      --btn-hover: #cbd5e1;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      padding: 2rem 1rem;
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      transition: background 0.3s, color 0.3s;
+    }
+    .container {
+      max-width: 850px;
+      width: 100%;
+    }
+
+    /* Header & Navigation Layout */
+    .header-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 2rem;
+      position: relative;
+    }
+    .brand-wrap {
+      display: flex;
+      align-items: center;
+      z-index: 2;
+    }
+    .team-logo {
+      height: 55px;
+      width: auto;
+      display: block;
+    }
+    .header-titles {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      text-align: center;
+      width: max-content;
+      pointer-events: none;
+    }
+    .header-titles h1 {
+      font-size: 1.5rem;
+      margin: 0;
+      font-weight: 700;
+      line-height: 1.2;
+      text-align: center;
+    }
+    .header-titles p {
+      margin: 0.2rem 0 0 0;
+      color: var(--muted);
+      font-size: 0.9rem;
+      text-align: center;
+    }
+
+    .theme-toggle-btn {
+      background: var(--btn-bg);
+      color: var(--text);
+      border: 1px solid var(--border);
+      padding: 0.45rem 0.85rem;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      white-space: nowrap;
+      transition: all 0.2s;
+      z-index: 2;
+    }
+    .theme-toggle-btn:hover {
+      background: var(--btn-hover);
+    }
+
+    /* Guide / Instructions Section */
+    .guide-section {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      text-align: left;
+      margin-bottom: 2.5rem;
+      transition: background 0.3s, border-color 0.3s;
+    }
+    .guide-section h2 {
+      font-size: 1.1rem;
+      margin-top: 0;
+      margin-bottom: 1rem;
+      text-align: center;
+      color: var(--text);
+    }
+    .tab-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 0.5rem;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.5rem;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+    }
+    .tab-btn {
+      position: relative;
+      background: transparent;
+      color: var(--muted);
+      border: none;
+      padding: 0.5rem 0.9rem;
+      font-size: 0.85rem;
+      font-weight: 500;
+      cursor: pointer;
+      border-radius: 6px;
+      transition: color 0.2s, background 0.2s;
+    }
+    .tab-btn:hover {
+      background: var(--btn-hover);
+      color: var(--text);
+    }
+    .tab-btn.active {
+      color: var(--primary);
+      background: transparent;
+    }
+    .tab-btn.active:hover {
+      background: var(--btn-hover);
+    }
+    /* Extended indicator line with 80% width */
+    .tab-btn.active::after {
+      content: "";
+      position: absolute;
+      bottom: -0.5rem;
+      left: 10%;
+      width: 80%;
+      height: 2.5px;
+      background-color: var(--primary);
+      border-radius: 2px;
+    }
+    .tab-content {
+      display: none;
+    }
+    .tab-content.active {
+      display: block;
+    }
+    ol {
+      padding-left: 1.2rem;
+      color: var(--muted);
+      line-height: 1.6;
+      margin: 0;
+    }
+    ol li {
+      margin-bottom: 0.5rem;
+    }
+    ol strong {
+      color: var(--text);
+    }
+    .sub-heading {
+      color: var(--text);
+      font-size: 0.95rem;
+      font-weight: 600;
+      margin-top: 1rem;
+      margin-bottom: 0.5rem;
+    }
+
+    /* Section Title */
+    .section-title {
+      font-size: 1.25rem;
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+
+    /* Cards Layout */
+    .card-grid {
+      display: grid;
+      gap: 1rem;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      text-align: left;
+    }
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: background 0.3s, border-color 0.3s;
+    }
+    .card-title-wrap {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+      margin-bottom: 0.5rem;
+    }
+    .card-title {
+      font-weight: 600;
+      font-size: 1.1rem;
+      text-align: center;
+    }
+    
+    /* Tooltip styles */
+    .info-icon {
+      font-size: 0.9rem;
+      color: var(--primary);
+      cursor: pointer;
+      position: relative;
+      display: inline-block;
+    }
+    .info-icon:hover .tooltip {
+      visibility: visible;
+      opacity: 1;
+    }
+    .tooltip {
+      visibility: hidden;
+      width: 200px;
+      background-color: var(--card-bg);
+      color: var(--text);
+      text-align: center;
+      border-radius: 6px;
+      padding: 0.5rem;
+      position: absolute;
+      z-index: 10;
+      bottom: 125%;
+      left: 50%;
+      transform: translateX(-50%);
+      opacity: 0;
+      transition: opacity 0.2s;
+      border: 1px solid var(--border);
+      font-size: 0.75rem;
+      font-weight: normal;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+    }
+    .tooltip::after {
+      content: "";
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      margin-left: -5px;
+      border-width: 5px;
+      border-style: solid;
+      border-color: var(--border) transparent transparent transparent;
+    }
+    .card-url {
+      font-family: monospace;
+      font-size: 0.8rem;
+      color: var(--muted);
+      background: var(--url-bg);
+      padding: 0.5rem;
+      border-radius: 6px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      margin-bottom: 1rem;
+      text-align: center;
+      user-select: all;
+      -webkit-user-select: all;
+      cursor: text;
+      border: 1px solid var(--border);
+    }
+    .actions {
+      display: flex;
+      gap: 0.5rem;
+    }
+    button, .btn {
+      background: var(--btn-bg);
+      color: var(--text);
+      border: none;
+      padding: 0.5rem 0.8rem;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      transition: all 0.2s;
+    }
+    button:hover, .btn:hover {
+      background: var(--btn-hover);
+    }
+    button.primary {
+      background: var(--primary);
+      color: #ffffff;
+      width: 100%;
+      justify-content: center;
+    }
+    button.primary:hover {
+      background: var(--primary-hover);
+    }
+
+    /* Footer */
+    footer {
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.85rem;
+    }
+
+    @media (max-width: 650px) {
+      .header-bar {
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+      }
+      .header-titles {
+        position: static;
+        transform: none;
+        width: auto;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <!-- Top Header Bar -->
+  <div class="header-bar">
+    <div class="brand-wrap">
+      <img src="logo.png" alt="Mars Rover Design Team Logo" class="team-logo">
+    </div>
+    <div class="header-titles">
+      <h1>Mars Rover Design Team</h1>
+      <p>Calendar Subscription Guide & Links</p>
+    </div>
+    <button class="theme-toggle-btn" id="theme-btn" onclick="toggleTheme()">
+      <span id="theme-icon">🌙</span> <span id="theme-text">Dark Mode</span>
+    </button>
+  </div>
+
+  <!-- Instructions -->
+  <div class="guide-section">
+    <h2>How to Subscribe to a Calendar</h2>
+    <div class="tab-buttons">
+      <button class="tab-btn active" onclick="showTab('outlook', event)">Outlook</button>
+      <button class="tab-btn" onclick="showTab('google', event)">Google Calendar</button>
+      <button class="tab-btn" onclick="showTab('apple', event)">Apple / iOS</button>
+      <button class="tab-btn" onclick="showTab('other', event)">Other Calendars</button>
+    </div>
+
+    <div id="tab-outlook" class="tab-content active">
+      <div class="sub-heading">Outlook Desktop App and Web</div>
+      <ol>
+        <li>Copy a <strong>ICS Link</strong> from below</li>
+        <li>Open the Outlook Desktop App or <a href="https://outlook.office.com/calendar/" target="_blank" style="color:var(--primary)">Outlook Web</a></li>
+        <li>Click <strong>Add calendar</strong> on the left side</li>
+        <li>In the menu that appears, click <strong>Subscribe from web</strong> on the left side</li>
+        <li>Paste the URL, enter a name and select a color, then click <strong>Import</strong></li>
+      </ol>
+    </div>
+
+    <div id="tab-google" class="tab-content">
+      <ol>
+        <li>Copy a <strong>ICS Link</strong> from below</li>
+        <li>Go to <a href="https://calendar.google.com" target="_blank" style="color:var(--primary)">Google Calendar</a></li>
+        <li>In the left sidebar, click <strong>+</strong> next to <strong>Other calendars</strong> &rarr; select <strong>From URL</strong></li>
+        <li>Paste the link and click <strong>Add calendar</strong></li>
+        <li>Change the name and color as you like</li>
+      </ol>
+    </div>
+
+    <div id="tab-apple" class="tab-content">
+      <ol>
+        <li>Copy a <strong>ICS Link</strong> from below</li>
+        <li><strong>iPhone/iPad:</strong> Settings &rarr; Calendar &rarr; Accounts &rarr; Add Account &rarr; Other &rarr; Add Subscribed Calendar &rarr; Paste link.</li>
+        <li><strong>Mac:</strong> Open Calendar app &rarr; File &rarr; New Calendar Subscription &rarr; Paste link.</li>
+      </ol>
+    </div>
+
+    <div id="tab-other" class="tab-content">
+      <ol>
+        <li>Most calendars support the .ics format</li>
+        <li>"Google is a multi-trillion-dolar company"</li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- Links Section -->
+  <div class="section-title">Calendar Links</div>
+
+  <div class="card-grid">
+    <!-- General -->
+    <div class="card">
+      <div>
+        <div class="card-title-wrap">
+          <span class="card-title">General</span>
+          <span class="info-icon">ⓘ<span class="tooltip">All Team meetings, design reviews, SDELC events, etc</span></span>
+        </div>
+        <div class="card-url" id="url-gen">https://outlook.office365.com/owa/calendar/39072da9723c4b539c38483558c3ffda@mst.edu/5dd44ab0dd874dd2a1fb764cd6848d1113443731749229981181/calendar.ics</div>
+      </div>
+      <div class="actions">
+        <button class="primary" onclick="copyUrl('url-gen', this)">📋 Copy ICS Link</button>
+      </div>
+    </div>
+
+    <!-- Mechanical -->
+    <div class="card">
+      <div>
+        <div class="card-title-wrap">
+          <span class="card-title">Mechanical</span>
+          <span class="info-icon">ⓘ<span class="tooltip">Mechanical subteam work times and trainings</span></span>
+        </div>
+        <div class="card-url" id="url-mech">https://outlook.office365.com/owa/calendar/39072da9723c4b539c38483558c3ffda@mst.edu/d5472bd121ac4878bdcd4409c064a41911977847176050978090/calendar.ics</div>
+      </div>
+      <div class="actions">
+        <button class="primary" onclick="copyUrl('url-mech', this)">📋 Copy ICS Link</button>
+      </div>
+    </div>
+
+    <!-- Electrical -->
+    <div class="card">
+      <div>
+        <div class="card-title-wrap">
+          <span class="card-title">Electrical</span>
+          <span class="info-icon">ⓘ<span class="tooltip">Electrical subteam work times and trainings</span></span>
+        </div>
+        <div class="card-url" id="url-elec">https://outlook.office365.com/owa/calendar/39072da9723c4b539c38483558c3ffda@mst.edu/1567ba5ca4194caa88ac085193fa6b8c1853870922556158560/calendar.ics</div>
+      </div>
+      <div class="actions">
+        <button class="primary" onclick="copyUrl('url-elec', this)">📋 Copy ICS Link</button>
+      </div>
+    </div>
+
+    <!-- Software -->
+    <div class="card">
+      <div>
+        <div class="card-title-wrap">
+          <span class="card-title">Software</span>
+          <span class="info-icon">ⓘ<span class="tooltip">Software subteam work times and trainings</span></span>
+        </div>
+        <div class="card-url" id="url-soft">https://outlook.office365.com/owa/calendar/39072da9723c4b539c38483558c3ffda@mst.edu/b83f149f4bdd4f11a550a53fe163f66116939172907864474625/calendar.ics</div>
+      </div>
+      <div class="actions">
+        <button class="primary" onclick="copyUrl('url-soft', this)">📋 Copy ICS Link</button>
+      </div>
+    </div>
+
+    <!-- Science -->
+    <div class="card">
+      <div>
+        <div class="card-title-wrap">
+          <span class="card-title">Science</span>
+          <span class="info-icon">ⓘ<span class="tooltip">Science subteam work times and trainings</span></span>
+        </div>
+        <div class="card-url" id="url-sci">https://outlook.office365.com/owa/calendar/39072da9723c4b539c38483558c3ffda@mst.edu/835b4cf49ccc4830ba0b5c5fb78737c18273785263867804497/calendar.ics</div>
+      </div>
+      <div class="actions">
+        <button class="primary" onclick="copyUrl('url-sci', this)">📋 Copy ICS Link</button>
+      </div>
+    </div>
+
+    <!-- R&D -->
+    <div class="card">
+      <div>
+        <div class="card-title-wrap">
+          <span class="card-title">R&D</span>
+          <span class="info-icon">ⓘ<span class="tooltip">R&D subteam work times and trainings</span></span>
+        </div>
+        <div class="card-url" id="url-rnd">https://outlook.office365.com/owa/calendar/39072da9723c4b539c38483558c3ffda@mst.edu/402b57d7bf7b4eb091f6d45434c493868813541559621338553/calendar.ics</div>
+      </div>
+      <div class="actions">
+        <button class="primary" onclick="copyUrl('url-rnd', this)">📋 Copy ICS Link</button>
+      </div>
+    </div>
+
+    <!-- PR -->
+    <div class="card">
+      <div>
+        <div class="card-title-wrap">
+          <span class="card-title">PR</span>
+          <span class="info-icon">ⓘ<span class="tooltip">PR subteam meetings</span></span>
+        </div>
+        <div class="card-url" id="url-pr">https://outlook.office365.com/owa/calendar/39072da9723c4b539c38483558c3ffda@mst.edu/9a30ba5b9c864bbb890d8011444b48d14050354081484216104/calendar.ics</div>
+      </div>
+      <div class="actions">
+        <button class="primary" onclick="copyUrl('url-pr', this)">📋 Copy ICS Link</button>
+      </div>
+    </div>
+
+    <!-- PR Events -->
+    <div class="card">
+      <div>
+        <div class="card-title-wrap">
+          <span class="card-title">PR Events</span>
+          <span class="info-icon">ⓘ<span class="tooltip">Public outreach events</span></span>
+        </div>
+        <div class="card-url" id="url-prevents">https://outlook.office365.com/owa/calendar/39072da9723c4b539c38483558c3ffda@mst.edu/51728d2e2a924ac58139686b1904b6235158740939994596421/calendar.ics</div>
+      </div>
+      <div class="actions">
+        <button class="primary" onclick="copyUrl('url-prevents', this)">📋 Copy ICS Link</button>
+      </div>
+    </div>
+
+    <!-- Testing Sessions -->
+    <div class="card">
+      <div>
+        <div class="card-title-wrap">
+          <span class="card-title">Testing Sessions</span>
+          <span class="info-icon">ⓘ<span class="tooltip">Testing sesions and task simulations</span></span>
+        </div>
+        <div class="card-url" id="url-test">https://outlook.office365.com/owa/calendar/39072da9723c4b539c38483558c3ffda@mst.edu/c85eeb945d644f048d30ace3ccde6bf64486160743582721840/calendar.ics</div>
+      </div>
+      <div class="actions">
+        <button class="primary" onclick="copyUrl('url-test', this)">📋 Copy ICS Link</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer Section -->
+  <footer>
+    Mars Rover Design Team &bull; Missouri University of Science and Technology &bull; 2026
+  </footer>
+</div>
+
+<script>
+  // Theme Management
+  function initTheme() {
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme) {
+      setTheme(savedTheme);
+    } else {
+      const prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+      setTheme(prefersLight ? 'light' : 'dark');
+    }
+  }
+
+  function setTheme(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    const icon = document.getElementById('theme-icon');
+    const text = document.getElementById('theme-text');
+    if (theme === 'light') {
+      icon.innerText = '☀️';
+      text.innerText = 'Light Mode';
+    } else {
+      icon.innerText = '🌙';
+      text.innerText = 'Dark Mode';
+    }
+    localStorage.setItem('theme', theme);
+  }
+
+  function toggleTheme() {
+    const currentTheme = document.documentElement.getAttribute('data-theme');
+    setTheme(currentTheme === 'light' ? 'dark' : 'light');
+  }
+
+  // Copy Link Logic
+  function copyUrl(elementId, btn) {
+    const text = document.getElementById(elementId).innerText;
+    navigator.clipboard.writeText(text).then(() => {
+      const orig = btn.innerHTML;
+      btn.innerHTML = '✅ Copied!';
+      btn.style.background = 'var(--accent)';
+      setTimeout(() => {
+        btn.innerHTML = orig;
+        btn.style.background = 'var(--primary)';
+      }, 2000);
+    });
+  }
+
+  // Tab Switcher
+  function showTab(tabName, evt) {
+    document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+    document.getElementById('tab-' + tabName).classList.add('active');
+    evt.currentTarget.classList.add('active');
+  }
+
+  // Initialize
+  initTheme();
+</script>
+
+</body>
+</html>
